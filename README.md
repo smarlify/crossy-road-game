@@ -1,6 +1,6 @@
 # Crossy Road - 2.5D Runner Game
 
-A 2.5D endless runner game inspired by Crossy Road, built with React Three Fiber. Navigate through procedurally generated levels, avoid obstacles, and collect corn to save your progress!
+An endless runner game inspired by Crossy Road, built with React Three Fiber. Navigate through procedurally generated levels, avoid obstacles, and collect corn to save your progress!
 
 ## 🎮 How to Play
 
@@ -41,7 +41,7 @@ A 2.5D endless runner game inspired by Crossy Road, built with React Three Fiber
 
 This is an interactive tech demo using React Three Fiber with:
 - **Orthographic camera** that follows the player
-- **2.5D objects** with realistic lighting and shadows
+- **3D objects** with realistic lighting and shadows
 - **Procedural level generation** - each playthrough is unique
 - **Smooth animations** and responsive controls
 - **Sound effects** for immersion
