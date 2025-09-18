@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) 2025 David Nekovář (https://codepen.io/davidnekovarcz/pen/YPXbOer)
+Copyright (c) 2025 David Nekovář (https://github.com/davidnekovarcz/three-js-crossy-road)
 Fork of an original work Crossy Road with React Three Fiber (https://codepen.io/HunorMarton/pen/xbxRbVQ)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
