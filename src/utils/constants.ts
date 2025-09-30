@@ -23,6 +23,8 @@ export const DEFAULT_GAME_STATE: GameState = {
   checkpointRow: 0,
   checkpointTile: 0,
   isPaused: false,
+  playCount: 0,
+  totalCornCollected: 0,
 };
 
 // Camera configuration
