@@ -2,7 +2,10 @@ import React, { useEffect } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { throttleRender } from '@/utils/fpsThrottle';
 import { CAMERA_CONFIG } from '@/utils/constants';
-import { initBackgroundMusic, playBackgroundMusic } from '@/sound/playBackgroundMusic';
+import {
+  initBackgroundMusic,
+  playBackgroundMusic,
+} from '@/sound/playBackgroundMusic';
 import * as THREE from 'three';
 
 /**
@@ -10,20 +13,20 @@ import * as THREE from 'three';
  */
 function AudioInitializer() {
   const { camera } = useThree();
-  
+
   useEffect(() => {
     // Create audio listener and attach to camera
     const listener = new THREE.AudioListener();
     camera.add(listener);
-    
+
     // Initialize background music
     initBackgroundMusic(listener);
-    
+
     // Start playing background music
     setTimeout(() => {
       playBackgroundMusic();
     }, 1000); // Small delay to ensure audio is loaded
-    
+
     // Cleanup
     return () => {
       if (camera.children.includes(listener)) {

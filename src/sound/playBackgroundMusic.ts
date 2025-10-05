@@ -8,7 +8,7 @@ export function initBackgroundMusic(listener: AudioListener): void {
   const audioLoader = new AudioLoader();
 
   backgroundMusic = new Audio(audioListener);
-  
+
   audioLoader.load('/audio/bg-music.mp3', buffer => {
     if (backgroundMusic) {
       backgroundMusic.setBuffer(buffer);
