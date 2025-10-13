@@ -3,7 +3,7 @@ import { resetPlayerStore } from '@/logic/playerLogic';
 import { useMapStore } from '@/store/mapStore';
 import { DEFAULT_GAME_STATE } from '@/utils/constants';
 import { GameStore } from '@/types';
-import { trackGamePlayed } from '@/utils/analytics';
+import { trackGamePlayed, trackMaxLevel } from '@/utils/analytics';
 import { initializeFirebaseAuth } from '@/utils/firebase';
 
 // GA tracking helper
@@ -53,6 +53,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const state = get();
     const newScore = Math.max(rowIndex, state.score);
     set({ score: newScore });
+
+    // Track max level achievement
+    if (newScore > state.score) {
+      trackMaxLevel(newScore);
+    }
 
     // Track score milestones
     if (newScore > state.score && newScore % 10 === 0) {
