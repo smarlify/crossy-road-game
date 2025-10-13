@@ -101,6 +101,18 @@ export const useGameStore = create<GameStore>((set, get) => ({
       play_count: state.playCount,
       event_category: 'game_interaction',
     });
+
+    // Send game over message to parent iframe
+    if (typeof window !== 'undefined' && window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'GAME_OVER',
+        gameName: 'Crossy Road',
+        score: state.score,
+        level: undefined,
+        cornCollected: state.cornCount,
+        totalCornCollected: state.totalCornCollected
+      }, '*');
+    }
   },
   reset: () => {
     const state = get();
