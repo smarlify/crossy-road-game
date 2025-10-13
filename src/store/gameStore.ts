@@ -4,6 +4,7 @@ import { useMapStore } from '@/store/mapStore';
 import { DEFAULT_GAME_STATE } from '@/utils/constants';
 import { GameStore } from '@/types';
 import { trackGamePlayed } from '@/utils/analytics';
+import { initializeFirebaseAuth } from '@/utils/firebase';
 
 // GA tracking helper
 const trackEvent = (
@@ -15,9 +16,17 @@ const trackEvent = (
   }
 };
 
-// Track game played on initial load
+// Initialize Firebase and track game played on initial load
 if (typeof window !== 'undefined') {
-  trackGamePlayed();
+  const initializeAndTrack = async () => {
+    // Initialize Firebase auth (creates anonymous user if needed)
+    await initializeFirebaseAuth();
+    
+    // Track game play
+    await trackGamePlayed();
+  };
+  
+  initializeAndTrack();
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
