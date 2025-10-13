@@ -3,6 +3,7 @@ import { resetPlayerStore } from '@/logic/playerLogic';
 import { useMapStore } from '@/store/mapStore';
 import { DEFAULT_GAME_STATE } from '@/utils/constants';
 import { GameStore } from '@/types';
+import { trackGamePlayed } from '@/utils/analytics';
 
 // GA tracking helper
 const trackEvent = (
@@ -13,6 +14,11 @@ const trackEvent = (
     window.trackEvent(eventName, parameters);
   }
 };
+
+// Track game played on initial load
+if (typeof window !== 'undefined') {
+  trackGamePlayed();
+}
 
 export const useGameStore = create<GameStore>((set, get) => ({
   ...DEFAULT_GAME_STATE,
