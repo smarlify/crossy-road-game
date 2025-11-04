@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useGameStore } from '@/store/gameStore';
+import { useUserStore } from '@/store/userStore';
 import { queueMove } from '@/logic/playerLogic';
 import { UI_CONFIG } from '@/utils/constants';
 
@@ -26,13 +27,62 @@ export function Result() {
   const status = useGameStore(state => state.status);
   const score = useGameStore(state => state.score);
   const reset = useGameStore(state => state.reset);
+  const userData = useUserStore(state => state.userData);
+  const setUserName = useUserStore(state => state.setUserName);
+
+  const [nameInput, setNameInput] = useState('');
+  const [showNameForm, setShowNameForm] = useState(false);
+
   if (status === 'running') return null;
+
+  const handleNameSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (nameInput.trim()) {
+      setUserName(nameInput);
+      setShowNameForm(false);
+      reset();
+    }
+  };
+
+  const handleRetry = () => {
+    if (userData) {
+      reset();
+    } else {
+      setShowNameForm(true);
+    }
+  };
+
+  if (showNameForm) {
+    return (
+      <div id="result-container">
+        <div id="result">
+          <h1>Game Over</h1>
+          <p>Your score: {score}</p>
+          <form onSubmit={handleNameSubmit} id="name-form">
+            <label htmlFor="player-name">Enter your name:</label>
+            <input
+              id="player-name"
+              type="text"
+              value={nameInput}
+              onChange={(e) => setNameInput(e.target.value)}
+              placeholder="Your name"
+              autoFocus
+              maxLength={20}
+            />
+            <button type="submit">Start</button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div id="result-container">
       <div id="result">
         <h1>Game Over</h1>
+        {userData && <p className="player-name">Player: {userData.name}</p>}
         <p>Your score: {score}</p>
-        <button onClick={reset}>Retry</button>
+        <button onClick={handleRetry}>Retry</button>
       </div>
     </div>
   );

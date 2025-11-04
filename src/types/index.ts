@@ -99,6 +99,17 @@ export interface MapStore {
   reset: () => void;
 }
 
+export interface UserData {
+  id: string;
+  name: string;
+}
+
+export interface UserStore {
+  userData: UserData | null;
+  setUserName: (name: string) => void;
+  clearUser: () => void;
+}
+
 // Component props types
 export interface GrassProps {
   rowIndex: number;
