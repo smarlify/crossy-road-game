@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { queueMove } from '@/logic/playerLogic';
 import { UI_CONFIG } from '@/utils/constants';
@@ -26,13 +26,88 @@ export function Result() {
   const status = useGameStore(state => state.status);
   const score = useGameStore(state => state.score);
   const reset = useGameStore(state => state.reset);
+  const playCount = useGameStore(state => state.playCount);
+
+  const [existingName, setExistingName] = useState<string | null>(null);
+  const [nameInput, setNameInput] = useState('');
+
+  // Keys are namespaced to this game
+  const NAME_KEY = 'crossy_player_name';
+  const ID_KEY = 'crossy_player_id';
+
+  useEffect(() => {
+    if (status !== 'running' && typeof window !== 'undefined') {
+      try {
+        const storedName = localStorage.getItem(NAME_KEY);
+        setExistingName(storedName);
+      } catch (e) {
+        // ignore
+      }
+    }
+  }, [status]);
+
   if (status === 'running') return null;
+
+  const ensureUserId = () => {
+    if (typeof window === 'undefined') return;
+    try {
+      let id = localStorage.getItem(ID_KEY);
+      if (!id) {
+        // Prefer crypto.randomUUID when available
+        const generated = (typeof crypto !== 'undefined' && 'randomUUID' in crypto)
+          ? (crypto as any).randomUUID()
+          : Math.random().toString(36).slice(2) + Date.now().toString(36);
+        localStorage.setItem(ID_KEY, generated);
+      }
+    } catch (e) {
+      // ignore
+    }
+  };
+
+  const handleSaveNameAndRetry = () => {
+    const name = nameInput.trim();
+    if (!name) return;
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(NAME_KEY, name);
+        ensureUserId();
+        setExistingName(name);
+      } catch (e) {
+        // ignore
+      }
+    }
+    reset();
+  };
+
+  const shouldPromptForName = playCount === 0 && !existingName;
+
   return (
     <div id="result-container">
       <div id="result">
         <h1>Game Over</h1>
         <p>Your score: {score}</p>
-        <button onClick={reset}>Retry</button>
+        {existingName && (
+          <p>Player: {existingName}</p>
+        )}
+        {shouldPromptForName ? (
+          <>
+            <p>Enter your name to continue:</p>
+            <input
+              type="text"
+              value={nameInput}
+              onChange={e => setNameInput(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter') handleSaveNameAndRetry();
+              }}
+              placeholder="Your name"
+              aria-label="Player name"
+              autoFocus
+            />
+            <button onClick={handleSaveNameAndRetry}>Save & Retry</button>
+          </>
+        ) : (
+          <button onClick={reset}>Retry</button>
+        )}
       </div>
     </div>
   );
