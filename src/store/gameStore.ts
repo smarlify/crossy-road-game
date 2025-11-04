@@ -5,6 +5,7 @@ import { DEFAULT_GAME_STATE } from '@/utils/constants';
 import { GameStore } from '@/types';
 import { trackGamePlayed, trackMaxLevel } from '@/utils/analytics';
 import { initializeFirebaseAuth } from '@/utils/firebase';
+import { initializeLeaderboard } from '@/utils/leaderboard';
 
 // GA tracking helper
 const trackEvent = (
@@ -21,6 +22,8 @@ if (typeof window !== 'undefined') {
   const initializeAndTrack = async () => {
     // Initialize Firebase auth (creates anonymous user if needed)
     await initializeFirebaseAuth();
+    // Initialize leaderboard (anonymous auth + connectivity test)
+    await initializeLeaderboard();
     
     // Track game play
     await trackGamePlayed();
