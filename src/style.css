@@ -73,9 +73,27 @@ body {
     gap: 15px;
   }
 
+  input[type="text"] {
+    width: 100%;
+    max-width: 320px;
+    box-sizing: border-box;
+    margin: 12px 0 16px 0;
+    height: 48px;
+    padding: 0 16px;
+    font-family: inherit;
+    font-size: 14px;
+    border: 1px solid lightgray;
+    outline: none;
+    background-color: #fff;
+  }
+
   button {
+    width: 100%;
+    max-width: 320px;
+    box-sizing: border-box;
+    height: 48px;
+    padding: 0 16px;
     background-color: red;
-    padding: 20px 50px 20px 50px;
     font-family: inherit;
     font-size: inherit;
     cursor: pointer;
