@@ -1,14 +1,14 @@
 /**
  * Game Analytics Utilities for Crossy Road
- * 
+ *
  * Tracks game play events and maintains play counts in localStorage + Firebase
  */
 
-import { 
-  initializeFirebaseAuth, 
-  syncGameStatsWithFirebase, 
+import {
+  initializeFirebaseAuth,
+  syncGameStatsWithFirebase,
   trackFirebaseEvent,
-  GameStats 
+  GameStats
 } from './firebase';
 
 const STORAGE_KEY = 'playful_game_stats';
@@ -19,7 +19,7 @@ const GAME_NAME = 'Crossy Road';
  */
 export function getGameStats(): GameStats {
   if (typeof window === 'undefined') return {};
-  
+
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored ? JSON.parse(stored) : {};
@@ -34,7 +34,7 @@ export function getGameStats(): GameStats {
  */
 function saveGameStats(stats: GameStats): void {
   if (typeof window === 'undefined') return;
-  
+
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
   } catch (error) {
@@ -50,7 +50,7 @@ function saveGameStats(stats: GameStats): void {
 export async function trackGamePlayed(): Promise<void> {
   const stats = getGameStats();
   const now = new Date().toISOString();
-  
+
   if (stats[GAME_NAME]) {
     // Update existing game stats
     stats[GAME_NAME].playCount += 1;
@@ -64,9 +64,9 @@ export async function trackGamePlayed(): Promise<void> {
       maxLevel: 0
     };
   }
-  
+
   saveGameStats(stats);
-  
+
   // Track with Google Analytics / GTM
   if (typeof window !== 'undefined' && window.trackEvent) {
     // Event 1: PLAY_GAME - tracks each play instance
@@ -74,7 +74,7 @@ export async function trackGamePlayed(): Promise<void> {
       game_name: GAME_NAME,
       timestamp: now
     });
-    
+
     // Event 2: GAME_PLAYED_TOTAL - tracks cumulative play count per user
     window.trackEvent('game_played_total', {
       game_name: GAME_NAME,
@@ -113,15 +113,15 @@ export async function trackGamePlayed(): Promise<void> {
 export async function trackMaxLevel(level: number): Promise<void> {
   const stats = getGameStats();
   const now = new Date().toISOString();
-  
+
   if (stats[GAME_NAME]) {
     // Update max level if this is higher
     if (level > (stats[GAME_NAME].maxLevel || 0)) {
       stats[GAME_NAME].maxLevel = level;
       stats[GAME_NAME].lastPlayed = now;
-      
+
       saveGameStats(stats);
-      
+
       // Track with Google Analytics / GTM
       if (typeof window !== 'undefined' && window.trackEvent) {
         window.trackEvent('max_level_achieved', {
@@ -130,14 +130,14 @@ export async function trackMaxLevel(level: number): Promise<void> {
           timestamp: now
         });
       }
-      
+
       // Track with Firebase Analytics
       trackFirebaseEvent('max_level_achieved', {
         game_name: GAME_NAME,
         max_level: level,
         timestamp: now
       });
-      
+
       // Sync with Firebase (async, don't wait)
       try {
         await syncGameStatsWithFirebase();

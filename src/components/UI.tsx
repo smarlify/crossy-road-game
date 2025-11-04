@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { queueMove } from '@/logic/playerLogic';
 import { UI_CONFIG } from '@/utils/constants';
+import { getTopScores, saveLeaderboardScore } from '@/utils/leaderboard';
 
 export function Score() {
   const score = useGameStore(state => state.score);
@@ -30,8 +31,8 @@ export function Result() {
 
   const [existingName, setExistingName] = useState<string | null>(null);
   const [nameInput, setNameInput] = useState('');
+  const [leaderboard, setLeaderboard] = useState<Array<{ name: string; score: number }>>([]);
 
-  // Keys are namespaced to this game
   const NAME_KEY = 'crossy_player_name';
   const ID_KEY = 'crossy_player_id';
 
@@ -40,9 +41,17 @@ export function Result() {
       try {
         const storedName = localStorage.getItem(NAME_KEY);
         setExistingName(storedName);
-      } catch (e) {
+      } catch {
         // ignore
       }
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (status === 'over') {
+      getTopScores('crossy-road', 10).then(entries => {
+        setLeaderboard(entries.map(e => ({ name: e.name, score: e.score })));
+      }).catch(() => setLeaderboard([]));
     }
   }, [status]);
 
@@ -53,15 +62,25 @@ export function Result() {
     try {
       let id = localStorage.getItem(ID_KEY);
       if (!id) {
-        // Prefer crypto.randomUUID when available
         const generated = (typeof crypto !== 'undefined' && 'randomUUID' in crypto)
           ? (crypto as any).randomUUID()
           : Math.random().toString(36).slice(2) + Date.now().toString(36);
         localStorage.setItem(ID_KEY, generated);
       }
-    } catch (e) {
+    } catch {
       // ignore
     }
+  };
+
+  const submitScoreThenReset = async (finalName: string) => {
+    ensureUserId();
+    const userId = typeof window !== 'undefined' ? (localStorage.getItem(ID_KEY) || 'unknown') : 'unknown';
+    try {
+      await saveLeaderboardScore('crossy-road', { userId, name: finalName || 'Anonymous', score });
+    } catch {
+      // ignore failures
+    }
+    reset();
   };
 
   const handleSaveNameAndRetry = () => {
@@ -70,13 +89,12 @@ export function Result() {
     if (typeof window !== 'undefined') {
       try {
         localStorage.setItem(NAME_KEY, name);
-        ensureUserId();
         setExistingName(name);
-      } catch (e) {
+      } catch {
         // ignore
       }
     }
-    reset();
+    submitScoreThenReset(name);
   };
 
   const shouldPromptForName = playCount === 0 && !existingName;
@@ -106,7 +124,20 @@ export function Result() {
             <button onClick={handleSaveNameAndRetry}>Save & Retry</button>
           </>
         ) : (
-          <button onClick={reset}>Retry</button>
+          <button onClick={() => submitScoreThenReset(existingName || 'Anonymous')}>Retry</button>
+        )}
+        {leaderboard.length > 0 && (
+          <div style={{ marginTop: 16, width: '100%', maxWidth: 320 }}>
+            <h3 style={{ margin: '12px 0 8px 0' }}>Leaderboard</h3>
+            <ol style={{ paddingLeft: 16, margin: 0 }}>
+              {leaderboard.map((e, idx) => (
+                <li key={idx} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span>{e.name || 'Anonymous'}</span>
+                  <span>{e.score}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
         )}
       </div>
     </div>
@@ -133,7 +164,7 @@ export function CornScore() {
 
 export function useEventListeners() {
   useEffect(() => {
-    const handleKeyDown = event => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'ArrowUp') {
         event.preventDefault();
         queueMove('forward');
