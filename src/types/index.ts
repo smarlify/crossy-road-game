@@ -110,6 +110,23 @@ export interface UserStore {
   clearUser: () => void;
 }
 
+// Leaderboard types
+export interface LeaderboardEntry {
+  id: string;
+  name: string;
+  score: number;
+  timestamp: number;
+}
+
+export interface LeaderboardStore {
+  entries: LeaderboardEntry[];
+  loading: boolean;
+  error: string | null;
+  fetchLeaderboard: (gameName: string) => Promise<void>;
+  addEntry: (gameName: string, entry: Omit<LeaderboardEntry, 'timestamp'>) => Promise<void>;
+  clearLeaderboard: () => void;
+}
+
 // Component props types
 export interface GrassProps {
   rowIndex: number;

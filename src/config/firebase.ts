@@ -1,0 +1,29 @@
+import { initializeApp } from 'firebase/app';
+import { getDatabase } from 'firebase/database';
+
+// Firebase project configuration
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL ||
+    `https://${import.meta.env.VITE_FIREBASE_PROJECT_ID}-default-rtdb.firebaseio.com`,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+// Initialize Realtime Database
+export const database = getDatabase(app);
+
+// Game names for database structure
+export const GAME_NAMES = {
+  CROSSY_ROAD: 'crossy-road',
+  TRAFFIC_RUN: 'traffic-run',
+} as const;
+
+export type GameName = typeof GAME_NAMES[keyof typeof GAME_NAMES];
