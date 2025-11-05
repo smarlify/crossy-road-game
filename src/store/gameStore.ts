@@ -27,7 +27,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     if (userData && score > 0) {
       const leaderboardStore = useLeaderboardStore.getState();
-      leaderboardStore.addEntry('crossy-road', {
+      leaderboardStore.addEntry({
         id: userData.id,
         name: userData.name,
         score: score,

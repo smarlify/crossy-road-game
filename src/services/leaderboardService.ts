@@ -3,14 +3,13 @@ import { saveLeaderboardScore } from '@/utils/leaderboard';
 
 /**
  * Save a game result to Firestore
- * Path: leaderboards/[gameName]/scores/[docId]
+ * Path: leaderboards/crossy-road/scores/[docId]
  */
 export async function saveScore(
-  gameName: string,
   entry: Omit<LeaderboardEntry, 'timestamp'>
 ): Promise<void> {
   try {
-    await saveLeaderboardScore(gameName, {
+    await saveLeaderboardScore({
       id: entry.id,
       name: entry.name,
       score: entry.score,

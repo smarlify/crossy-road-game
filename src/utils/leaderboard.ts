@@ -23,10 +23,9 @@ const app =
 const db = getFirestore(app);
 
 export async function saveLeaderboardScore(
-  gameName: string,
   entry: { id: string; name: string; score: number }
 ): Promise<void> {
-  const col = collection(db, 'leaderboards', gameName, 'scores');
+  const col = collection(db, 'leaderboards', 'crossy-road', 'scores');
   await addDoc(col, {
     id: entry.id,
     name: entry.name,

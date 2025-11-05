@@ -6,10 +6,10 @@ export const useLeaderboardStore = create<LeaderboardStore>((set) => ({
   loading: false,
   error: null,
 
-  addEntry: async (gameName: string, entry: Omit<LeaderboardEntry, 'timestamp'>) => {
+  addEntry: async (entry: Omit<LeaderboardEntry, 'timestamp'>) => {
     set({ loading: true, error: null });
     try {
-      await saveScore(gameName, entry);
+      await saveScore(entry);
       set({ loading: false });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to save score';
