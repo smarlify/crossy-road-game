@@ -1,8 +1,5 @@
 import { LeaderboardEntry } from '@/types';
-import {
-  saveLeaderboardScore,
-} from '@/utils/leaderboard';
-
+import { saveLeaderboardScore } from '@/utils/leaderboard';
 
 /**
  * Save a game result to Firestore
@@ -13,7 +10,7 @@ export async function saveScore(
   entry: Omit<LeaderboardEntry, 'timestamp'>
 ): Promise<void> {
   try {
-    await saveLeaderboardScore(gameName as string, {
+    await saveLeaderboardScore(gameName, {
       id: entry.id,
       name: entry.name,
       score: entry.score,

@@ -119,12 +119,9 @@ export interface LeaderboardEntry {
 }
 
 export interface LeaderboardStore {
-  entries: LeaderboardEntry[];
   loading: boolean;
   error: string | null;
-  fetchLeaderboard: (gameName: string) => Promise<void>;
   addEntry: (gameName: string, entry: Omit<LeaderboardEntry, 'timestamp'>) => Promise<void>;
-  clearLeaderboard: () => void;
 }
 
 // Component props types

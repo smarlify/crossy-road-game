@@ -13,18 +13,20 @@ const firebaseConfig = {
   projectId: import.meta.env.VITE_LEADERBOARD_PROJECT_ID,
   storageBucket: import.meta.env.VITE_LEADERBOARD_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_LEADERBOARD_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_LEADERBOARD_APP_ID
+  appId: import.meta.env.VITE_LEADERBOARD_APP_ID,
 };
 
 // Create a dedicated named app to avoid conflicts
-const app = getApps().find(a => a.name === 'leaderboard') || initializeApp(firebaseConfig, 'leaderboard');
+const app =
+  getApps().find(a => a.name === 'leaderboard') ||
+  initializeApp(firebaseConfig, 'leaderboard');
 const db = getFirestore(app);
 
 export async function saveLeaderboardScore(
+  gameName: string,
   entry: { id: string; name: string; score: number }
 ): Promise<void> {
-
-  const col = collection(db, 'leaderboards', 'crossy-road', 'scores');
+  const col = collection(db, 'leaderboards', gameName, 'scores');
   await addDoc(col, {
     id: entry.id,
     name: entry.name,
