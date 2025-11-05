@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useUserStore } from '@/store/userStore';
-import { useLeaderboardStore } from '@/store/leaderboardStore';
 import { queueMove } from '@/logic/playerLogic';
 import { UI_CONFIG } from '@/utils/constants';
 
@@ -31,19 +30,8 @@ export function Result() {
   const userData = useUserStore(state => state.userData);
   const setUserName = useUserStore(state => state.setUserName);
 
-  const leaderboard = useLeaderboardStore(state => state.entries);
-  const loading = useLeaderboardStore(state => state.loading);
-  const fetchLeaderboard = useLeaderboardStore(state => state.fetchLeaderboard);
-
   const [nameInput, setNameInput] = useState('');
   const [showNameForm, setShowNameForm] = useState(false);
-
-  // Fetch leaderboard when game is over
-  useEffect(() => {
-    if (status === 'over') {
-      fetchLeaderboard('crossy-road');
-    }
-  }, [status, fetchLeaderboard]);
 
   if (status === 'running') return null;
 
@@ -94,30 +82,6 @@ export function Result() {
         <h1>Game Over</h1>
         {userData && <p className="player-name">Player: {userData.name}</p>}
         <p>Your score: {score}</p>
-
-        {/* Leaderboard */}
-        <div className="leaderboard">
-          <h2>Leaderboard</h2>
-          {loading ? (
-            <p className="loading">Loading...</p>
-          ) : leaderboard.length > 0 ? (
-            <ol className="leaderboard-list">
-              {leaderboard.map((entry, index) => (
-                <li
-                  key={`${entry.id}-${entry.timestamp}`}
-                  className={entry.id === userData?.id && entry.score === score ? 'current-player' : ''}
-                >
-                  <span className="rank">{index + 1}.</span>
-                  <span className="name">{entry.name}</span>
-                  <span className="score">{entry.score}</span>
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <p className="no-scores">No scores yet. Be the first!</p>
-          )}
-        </div>
-
         <button onClick={handleRetry}>Retry</button>
       </div>
     </div>
