@@ -20,14 +20,6 @@ const firebaseConfig = {
 const app = getApps().find(a => a.name === 'leaderboard') || initializeApp(firebaseConfig, 'leaderboard');
 const db = getFirestore(app);
 
-export interface LeaderboardEntry {
-  id?: string;
-  name: string;
-  score: number;
-  timestamp?: number;
-  createdAt?: Timestamp;
-}
-
 export async function saveLeaderboardScore(
   entry: { id: string; name: string; score: number }
 ): Promise<void> {
