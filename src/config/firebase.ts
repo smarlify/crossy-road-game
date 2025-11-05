@@ -19,11 +19,3 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Realtime Database
 export const database = getDatabase(app);
-
-// Game names for database structure
-export const GAME_NAMES = {
-  CROSSY_ROAD: 'crossy-road',
-  TRAFFIC_RUN: 'traffic-run',
-} as const;
-
-export type GameName = typeof GAME_NAMES[keyof typeof GAME_NAMES];

@@ -5,7 +5,6 @@ import Scene from '@/components/Scene';
 import { Score, Controls, Result, CornScore } from '@/components/UI';
 
 export default function Game() {
-
   return (
     <div className="game">
       <Scene>
