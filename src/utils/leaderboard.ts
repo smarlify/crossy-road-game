@@ -1,35 +1,33 @@
-import { initializeApp, getApps } from 'firebase/app';
 import {
-  getFirestore,
   collection,
   addDoc,
   Timestamp,
 } from 'firebase/firestore';
-
-// Firebase config for leaderboard
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_LEADERBOARD_API_KEY,
-  authDomain: import.meta.env.VITE_LEADERBOARD_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_LEADERBOARD_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_LEADERBOARD_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_LEADERBOARD_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_LEADERBOARD_APP_ID,
-};
-
-// Create a dedicated named app to avoid conflicts
-const app =
-  getApps().find(a => a.name === 'leaderboard') ||
-  initializeApp(firebaseConfig, 'leaderboard');
-const db = getFirestore(app);
+import { firestore } from '../config/firebase';
 
 export async function saveLeaderboardScore(
   entry: { id: string; name: string; score: number }
 ): Promise<void> {
-  const col = collection(db, 'leaderboards', 'crossy-road', 'scores');
-  await addDoc(col, {
+  console.log('🎮 Starting leaderboard save...');
+  console.log('Entry data:', entry);
+
+  const col = collection(firestore, 'leaderboards', 'crossy-road', 'scores');
+  console.log('Firestore collection path: leaderboards/crossy-road/scores');
+
+  const dataToSave = {
     id: entry.id,
     name: entry.name,
     score: entry.score,
     createdAt: Timestamp.now(),
-  });
+  };
+
+  console.log('📤 Data being sent to Firestore:', dataToSave);
+
+  try {
+    const docRef = await addDoc(col, dataToSave);
+    console.log('✅ Score saved successfully! Doc ID:', docRef.id);
+  } catch (error) {
+    console.error('❌ Error saving to Firestore:', error);
+    throw error;
+  }
 }
