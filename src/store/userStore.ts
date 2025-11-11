@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { UserStore, UserData } from '../types';
+import { getCurrentUserDisplayName } from '../config/firebase';
 
 const USER_STORAGE_KEY = 'crossy-road-user';
 
@@ -49,5 +50,9 @@ export const useUserStore = create<UserStore>((set) => ({
       console.error('Error clearing user data:', error);
     }
     set({ userData: null });
+  },
+
+  getGoogleDisplayName: () => {
+    return getCurrentUserDisplayName();
   },
 }));

@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { getDatabase } from 'firebase/database';
 import { getFirestore } from 'firebase/firestore';
 
@@ -17,8 +18,37 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
+// Initialize Auth
+export const auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();
+
 // Initialize Realtime Database
 export const database = getDatabase(app);
 
 // Initialize Firestore
 export const firestore = getFirestore(app);
+
+// Get the current user's display name from Firebase
+export function getCurrentUserDisplayName(): string | null {
+  const user = auth.currentUser;
+  return user?.displayName || null;
+}
+
+// Sign in with Google
+export async function signInWithGooglePopup(): Promise<string | null> {
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const displayName = result.user.displayName;
+    console.log('Signed in as:', displayName);
+    return displayName;
+  } catch (error) {
+    console.error('Sign-in failed:', error);
+    throw error;
+  }
+}
+
+// Check if user is logged in with Google (not anonymous)
+export function isUserLoggedIn(): boolean {
+  const user = auth.currentUser;
+  return user !== null && !user.isAnonymous;
+}

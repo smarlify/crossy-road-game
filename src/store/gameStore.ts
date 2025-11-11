@@ -28,12 +28,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (userData && score > 0) {
       const leaderboardStore = useLeaderboardStore.getState();
       leaderboardStore.addEntry({
-        id: userData.id,
-        name: userData.name,
-        score: score,
-      }).catch(error => {
-        console.error('Failed to save score to leaderboard:', error);
-      });
+          id: userData.id,
+          name: userData.name,
+          score: score,
+        }).catch(error => {
+          console.error('Failed to save score to leaderboard:', error);
+        });
     }
   },
   reset: () => {
