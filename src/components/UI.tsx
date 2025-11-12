@@ -37,31 +37,29 @@ export function Result() {
 
   if (status === 'running') return null;
 
-  const handleNameSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (nameInput.trim()) {
-      const name = nameInput.trim();
+    const name = nameInput.trim();
 
-      // Create a temporary user data object for immediate save
-      const tempUserId = `user_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    // Create a temporary user data object for immediate save
+    const tempUserId = `user_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
-      // Set the user name in localStorage
-      setUserName(name);
+    // Set the user name in localStorage
+    setUserName(name);
 
-      // Save the score immediately with the new name
-      if (score > 0) {
-        addEntry({
-          id: tempUserId,
-          name: name,
-          score: score,
-        }).catch(error => {
-          console.error('Failed to save score:', error);
-        });
-      }
-
-      setShowNameForm(false);
-      reset();
+    // Save the score immediately with the new name
+    if (score > 0) {
+      addEntry({
+        id: tempUserId,
+        name: name,
+        score: score,
+      }).catch(error => {
+        console.error('Failed to save score:', error);
+      });
     }
+
+    setShowNameForm(false);
+    reset();
   };
 
   const handleRetry = () => {
@@ -78,7 +76,7 @@ export function Result() {
         <div id="result">
           <h1>Game Over</h1>
           <p>Your score: {score}</p>
-          <form onSubmit={handleNameSubmit} id="name-form">
+          <form onSubmit={handleSubmit} id="name-form">
             <label htmlFor="player-name">Enter your name:</label>
             <input
               id="player-name"
