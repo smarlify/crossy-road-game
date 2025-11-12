@@ -34,13 +34,19 @@ export function getCurrentUserDisplayName(): string | null {
   return user?.displayName || null;
 }
 
-// Sign in with Google
+// Get the current user's email from Firebase
+export function getCurrentUserEmail(): string | null {
+  const user = auth.currentUser;
+  return user?.email || null;
+}
+
+// Sign in with Google and return the user's email
 export async function signInWithGooglePopup(): Promise<string | null> {
   try {
     const result = await signInWithPopup(auth, googleProvider);
-    const displayName = result.user.displayName;
-    console.log('Signed in as:', displayName);
-    return displayName;
+    const email = result.user.email;
+    console.log('Signed in as:', email);
+    return email;
   } catch (error) {
     console.error('Sign-in failed:', error);
     throw error;

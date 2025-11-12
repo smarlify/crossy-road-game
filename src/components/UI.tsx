@@ -4,7 +4,7 @@ import { useUserStore } from '@/store/userStore';
 import { useLeaderboardStore } from '@/store/leaderboardStore';
 import { queueMove } from '@/logic/playerLogic';
 import { UI_CONFIG } from '@/utils/constants';
-import { signInWithGooglePopup, isUserLoggedIn, getCurrentUserDisplayName } from '@/config/firebase';
+import { signInWithGooglePopup, isUserLoggedIn } from '@/config/firebase';
 
 export function Score() {
   const score = useGameStore(state => state.score);
@@ -30,31 +30,27 @@ export function Result() {
   const score = useGameStore(state => state.score);
   const reset = useGameStore(state => state.reset);
   const userData = useUserStore(state => state.userData);
-  const setUserName = useUserStore(state => state.setUserName);
+  const getGoogleEmail = useUserStore(state => state.getGoogleEmail);
   const addEntry = useLeaderboardStore(state => state.addEntry);
 
   const [isSigningIn, setIsSigningIn] = useState(false);
 
   useEffect(() => {
-    // Auto-save Google name if user is logged in on first game over
+    // Save score if user is logged in on first game over
     if (status === 'over' && isUserLoggedIn() && !userData) {
-      const googleName = getCurrentUserDisplayName();
-      if (googleName) {
-        setUserName(googleName);
-        // Save the score immediately with the Google name
-        if (score > 0) {
-          const userId = `user_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-          addEntry({
-            id: userId,
-            name: googleName,
-            score: score,
-          }).catch(error => {
-            console.error('Failed to save score:', error);
-          });
-        }
+      const email = getGoogleEmail();
+      const name = userData?.name || 'Anonymous';
+      if (email && score > 0) {
+        addEntry({
+          id: email,
+          name: name,
+          score: score,
+        }).catch(error => {
+          console.error('Failed to save score:', error);
+        });
       }
     }
-  }, [status, userData, setUserName, addEntry, score]);
+  }, [status, userData, addEntry, score, getGoogleEmail]);
 
   // Only render if game is over
   if (status !== 'over') return null;
@@ -66,22 +62,16 @@ export function Result() {
   const handleSignIn = async () => {
     setIsSigningIn(true);
     try {
-      const googleName = await signInWithGooglePopup();
-      if (googleName) {
-        // Auto-save the Google name
-        setUserName(googleName);
-
-        // Save the score with the new name
-        if (score > 0) {
-          const userId = `user_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-          addEntry({
-            id: userId,
-            name: googleName,
-            score: score,
-          }).catch(error => {
-            console.error('Failed to save score:', error);
-          });
-        }
+      const email = await signInWithGooglePopup();
+      if (email && score > 0) {
+        // Save the score with the Google email
+        addEntry({
+          id: email,
+          name: email.split('@')[0],
+          score: score,
+        }).catch(error => {
+          console.error('Failed to save score:', error);
+        });
       }
     } catch (error) {
       console.error('Sign-in failed:', error);

@@ -106,9 +106,9 @@ export interface UserData {
 
 export interface UserStore {
   userData: UserData | null;
-  setUserName: (name: string) => void;
+  setUserName: (name: string, email: string) => void;
   clearUser: () => void;
-  getGoogleDisplayName: () => string | null;
+  getGoogleEmail: () => string | null;
 }
 
 // Leaderboard types
