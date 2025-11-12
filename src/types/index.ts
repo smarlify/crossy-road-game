@@ -109,6 +109,7 @@ export interface UserStore {
   setUserName: (name: string, email: string) => void;
   clearUser: () => void;
   getGoogleEmail: () => string | null;
+  getGoogleDisplayName: () => string | null;
 }
 
 // Leaderboard types

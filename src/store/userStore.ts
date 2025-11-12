@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { UserStore, UserData } from '../types';
-import { getCurrentUserEmail } from '../config/firebase';
+import { getCurrentUserEmail, getCurrentUserDisplayName } from '../config/firebase';
 
 export const useUserStore = create<UserStore>((set) => ({
   userData: null,
@@ -19,5 +19,9 @@ export const useUserStore = create<UserStore>((set) => ({
 
   getGoogleEmail: () => {
     return getCurrentUserEmail();
+  },
+
+  getGoogleDisplayName: () => {
+    return getCurrentUserDisplayName();
   },
 }));

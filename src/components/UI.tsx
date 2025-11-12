@@ -31,26 +31,31 @@ export function Result() {
   const reset = useGameStore(state => state.reset);
   const userData = useUserStore(state => state.userData);
   const getGoogleEmail = useUserStore(state => state.getGoogleEmail);
+  const getGoogleDisplayName = useUserStore(state => state.getGoogleDisplayName);
   const addEntry = useLeaderboardStore(state => state.addEntry);
 
   const [isSigningIn, setIsSigningIn] = useState(false);
+  const [scoreSaved, setScoreSaved] = useState(false);
 
   useEffect(() => {
     // Save score if user is logged in on first game over
-    if (status === 'over' && isUserLoggedIn() && !userData) {
+    if (status === 'over' && isUserLoggedIn() && !scoreSaved) {
       const email = getGoogleEmail();
-      const name = userData?.name || 'Anonymous';
+      const displayName = getGoogleDisplayName();
+      const name = displayName || email?.split('@')[0] || 'Anonymous';
       if (email && score > 0) {
         addEntry({
           id: email,
           name: name,
           score: score,
+        }).then(() => {
+          setScoreSaved(true);
         }).catch(error => {
           console.error('Failed to save score:', error);
         });
       }
     }
-  }, [status, userData, addEntry, score, getGoogleEmail]);
+  }, [status, addEntry, score, getGoogleEmail, getGoogleDisplayName, scoreSaved]);
 
   // Only render if game is over
   if (status !== 'over') return null;
@@ -64,14 +69,17 @@ export function Result() {
     try {
       const email = await signInWithGooglePopup();
       if (email && score > 0) {
-        // Save the score with the Google email
-        addEntry({
+        // Get display name from Google account
+        const displayName = getGoogleDisplayName();
+        const name = displayName || email.split('@')[0];
+
+        // Save the score with the Google display name
+        await addEntry({
           id: email,
-          name: email.split('@')[0],
+          name: name,
           score: score,
-        }).catch(error => {
-          console.error('Failed to save score:', error);
         });
+        setScoreSaved(true);
       }
     } catch (error) {
       console.error('Sign-in failed:', error);
@@ -80,13 +88,17 @@ export function Result() {
     }
   };
 
+  // Get player name from Google account or userData
+  const displayName = getGoogleDisplayName();
+  const playerName = displayName || userData?.name || null;
+
   return (
     <div id="result-container">
       <div id="result">
         <h1>Game Over</h1>
-        {userData && <p className="player-name">Player: {userData.name}</p>}
+        {playerName && <p className="player-name">Player: {playerName}</p>}
         <p>Your score: {score}</p>
-        <button onClick={handleRetry}>Retry</button>
+        {(isUserLoggedIn() || userData) && <button onClick={handleRetry}>Retry</button>}
         {!isUserLoggedIn() && !userData && (
           <div id="sign-in-section">
             <p id="sign-in-prompt">Want to save your score? Sign in with Google!</p>
