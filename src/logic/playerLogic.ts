@@ -98,7 +98,10 @@ export function resetPlayerStore(): void {
   playerState.ref.children[0].rotation.z = 0;
 }
 
-export function calculateFinalPosition(currentPosition: PlayerPosition, moves: MoveDirection[]): PlayerPosition {
+export function calculateFinalPosition(
+  currentPosition: PlayerPosition,
+  moves: MoveDirection[]
+): PlayerPosition {
   return moves.reduce((position, direction) => {
     if (direction === 'forward')
       return { rowIndex: position.rowIndex + 1, tileIndex: position.tileIndex };
@@ -112,7 +115,10 @@ export function calculateFinalPosition(currentPosition: PlayerPosition, moves: M
   }, currentPosition);
 }
 
-export function endsUpInValidPosition(currentPosition: PlayerPosition, moves: MoveDirection[]): boolean {
+export function endsUpInValidPosition(
+  currentPosition: PlayerPosition,
+  moves: MoveDirection[]
+): boolean {
   const finalPosition = calculateFinalPosition(currentPosition, moves);
   if (
     finalPosition.rowIndex === -1 ||

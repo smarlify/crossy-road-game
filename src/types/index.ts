@@ -10,6 +10,8 @@ export interface GameState {
   checkpointRow: number;
   checkpointTile: number;
   isPaused: boolean;
+  playCount: number;
+  totalCornCollected: number;
 }
 
 // Player types
@@ -85,11 +87,16 @@ export interface GameStore {
   checkpointRow: number;
   checkpointTile: number;
   isPaused: boolean;
+  playCount: number;
+  totalCornCollected: number;
+  pause: () => void;
+  resume: () => void;
   setCheckpoint: (row: number, tile: number) => void;
   incrementCorn: () => void;
   updateScore: (row: number) => void;
   setStatus: (status: GameStatus) => void;
   setPaused: (paused: boolean) => void;
+  endGame: () => void;
   reset: () => void;
 }
 

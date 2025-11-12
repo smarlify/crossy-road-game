@@ -1,8 +1,20 @@
 {
-  "name": "crossy-road-with-react-three-fiber",
+  "name": "three-js-crossy-road",
   "version": "1.0.0",
-  "description": "A Pen created on CodePen.",
+  "description": "Crossy Road - 2.5D Runner Game",
+  "author": "https://github.com/davidnekovarcz",
+  "license": "MIT",
   "main": "index.js",
+  "keywords": [
+    "crossy-road",
+    "game",
+    "2d",
+    "r3f",
+    "react-three-fiber",
+    "three-js",
+    "typescript",
+    "zustand"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -14,9 +26,6 @@
     "type-check": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@react-three/drei": "^10.4.2",
     "@react-three/fiber": "^9.1.4",

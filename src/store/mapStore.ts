@@ -3,7 +3,7 @@ import { generateRows } from '@/logic/mapLogic';
 import { INITIAL_ROWS, NEW_ROWS_BATCH } from '@/utils/constants';
 import { MapStore, RowData } from '@/types';
 
-export const useMapStore = create<MapStore>((set) => ({
+export const useMapStore = create<MapStore>(set => ({
   rows: generateRows(INITIAL_ROWS),
   addRows: () => {
     const newRows = generateRows(NEW_ROWS_BATCH);
