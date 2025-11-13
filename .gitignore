@@ -15,10 +15,11 @@ Thumbs.db
 
 # Env files
 .env
-.env.*
+.env.local
+.env*
 
 # Vite cache
 .vite/
 
 # Misc
-*.local 
+*.local

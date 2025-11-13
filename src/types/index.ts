@@ -106,6 +106,31 @@ export interface MapStore {
   reset: () => void;
 }
 
+export interface UserData {
+  id: string;
+  name: string;
+}
+
+export interface UserStore {
+  userData: UserData | null;
+  setUserName: (name: string) => void;
+  clearUser: () => void;
+}
+
+// Leaderboard types
+export interface LeaderboardEntry {
+  id: string;
+  name: string;
+  score: number;
+  timestamp: number;
+}
+
+export interface LeaderboardStore {
+  loading: boolean;
+  error: string | null;
+  addEntry: (entry: Omit<LeaderboardEntry, 'timestamp'>) => Promise<void>;
+}
+
 // Component props types
 export interface GrassProps {
   rowIndex: number;

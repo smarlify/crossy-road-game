@@ -30,7 +30,7 @@
     "@react-three/drei": "^10.4.2",
     "@react-three/fiber": "^9.1.4",
     "express": "^4.18.2",
-    "firebase": "^12.4.0",
+    "firebase": "^12.5.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "three": "^0.178.0",
