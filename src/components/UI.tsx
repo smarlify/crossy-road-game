@@ -35,7 +35,15 @@ export function Result() {
   const [nameInput, setNameInput] = useState('');
   const [showNameForm, setShowNameForm] = useState(false);
 
-  if (status === 'running') return null;
+  useEffect(() => {
+    if (status === 'running') {
+      setShowNameForm(false);
+      setNameInput('');
+    }
+  }, [status]);
+
+  // Only render if game is over
+  if (status !== 'over') return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,9 +78,9 @@ export function Result() {
     }
   };
 
-  if (showNameForm) {
-    return (
-      <div id="result-container">
+  return (
+    <div id="result-container">
+      {showNameForm ? (
         <div id="result">
           <h1>Game Over</h1>
           <p>Your score: {score}</p>
@@ -90,18 +98,14 @@ export function Result() {
             <button type="submit">Start</button>
           </form>
         </div>
-      </div>
-    );
-  }
-
-  return (
-    <div id="result-container">
-      <div id="result">
-        <h1>Game Over</h1>
-        {userData && <p className="player-name">Player: {userData.name}</p>}
-        <p>Your score: {score}</p>
-        <button onClick={handleRetry}>Retry</button>
-      </div>
+      ) : (
+        <div id="result">
+          <h1>Game Over</h1>
+          {userData && <p className="player-name">Player: {userData.name}</p>}
+          <p>Your score: {score}</p>
+          <button onClick={handleRetry}>Retry</button>
+        </div>
+      )}
     </div>
   );
 }
